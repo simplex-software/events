@@ -22,3 +22,8 @@ erl_crash.dump
 .idea
 
 events.iml
+
+**/*~
+
+events
+
