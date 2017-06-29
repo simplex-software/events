@@ -16,7 +16,11 @@ defmodule Events.Router do
 
   scope "/", Events do
     pipe_through :browser # Use the default browser stack
+<<<<<<< Updated upstream
     
+=======
+
+>>>>>>> Stashed changes
     resources "/users", UserController
 
     get "/", PageController, :index
