@@ -51,15 +51,21 @@ defmodule Events.Event do
   end
 
   def handle_cast({:add_participant, participant}, event) do
-     Enum.member?(event.participants, participant)
-     newevent = %{ event | participants: event.participants ++ [participant]}
-     {:noreply, newevent}
+      if Enum.member?(event.participants, participant) do
+        {:noreply, event}
+      else
+        newevent = %{ event | participants: event.participants ++ [participant]}
+        {:noreply, newevent}
+      end
   end
 
   def handle_cast({:remove_participant, participant}, event) do
-     Enum.member?(event.participants, participant)
-     newevent = %{ event | participants: List.delete(event.participants, participant)}
-     {:noreply, newevent}
+     if Enum.member?(event.participants, participant) do
+      newevent = %{ event | participants: List.delete(event.participants, participant)}
+      {:noreply, newevent}
+    else
+      {:noreply, event}
+    end
   end
 
   def handle_cast({:title, new_title}, event) do

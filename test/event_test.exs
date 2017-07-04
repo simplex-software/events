@@ -2,7 +2,7 @@ defmodule EventTest do
   use ExUnit.Case
   doctest Events.Event
 
-  test "adding particpant" do
+  test "add new particpant to event" do
     event = Events.Event.start_link("Title", "decription", ~N[2000-01-01 23:00:07], 320, "user@event.com")
     {_, pid} = event
     Events.Event.add_participant(pid, ["guido"])
@@ -10,10 +10,27 @@ defmodule EventTest do
     assert length(aux_event.participants) == 1
   end
 
-  test "removing particpant" do
+  test "remove existing particpant to event" do
     event = Events.Event.start_link("Title", "decription", ~N[2000-01-01 23:00:07], 320, "user@event.com")
     {_, pid} = event
     Events.Event.add_participant(pid, ["guido"])
+    Events.Event.remove_participant(pid, ["guido"])
+    aux_event = Events.Event.get_event(pid)
+    assert length(aux_event.participants) == 0
+  end
+
+  test "add existing particpant to event" do
+    event = Events.Event.start_link("Title", "decription", ~N[2000-01-01 23:00:07], 320, "user@event.com")
+    {_, pid} = event
+    Events.Event.add_participant(pid, ["guido"])
+    Events.Event.add_participant(pid, ["guido"])
+    aux_event = Events.Event.get_event(pid)
+    assert length(aux_event.participants) == 1
+  end
+
+  test "remove nonexisting particpant to event" do
+    event = Events.Event.start_link("Title", "decription", ~N[2000-01-01 23:00:07], 320, "user@event.com")
+    {_, pid} = event
     Events.Event.remove_participant(pid, ["guido"])
     aux_event = Events.Event.get_event(pid)
     assert length(aux_event.participants) == 0
