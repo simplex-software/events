@@ -1,10 +1,11 @@
 defmodule Events.Event do
   use GenServer
 
-  defstruct title: nil, description: nil, date: nil, duration: nil, owner: nil, participants: []
+  defstruct id: nil  , title: nil, description: nil, date: nil, duration: nil, owner: nil, participants: []
 
-  def start_link(title, description, date, duration, owner) do
-    GenServer.start_link(__MODULE__, %Events.Event{title: title,
+  def start_link(id, title, description, date, duration, owner) do
+    GenServer.start_link(__MODULE__, %Events.Event{id: id,
+    title: title,
     description: description,
     date: date,
     duration: duration,
@@ -12,36 +13,36 @@ defmodule Events.Event do
     })
   end
 
-  def init(state) do
-    {:ok, state}
+  def init(pid) do
+    {:ok, pid}
   end
 
-  def get_event(state) do
-     GenServer.call(state, :get_event)
+  def get_event(pid) do
+     GenServer.call(pid, :get_event)
   end
 
-  def add_participant(state, participant) do
-      GenServer.cast(state, {:add_participant, participant})
+  def add_participant(pid, participant) do
+      GenServer.cast(pid, {:add_participant, participant})
   end
 
-  def remove_participant(state,participant) do
-    GenServer.cast(state, {:remove_participant, participant})
+  def remove_participant(pid,participant) do
+    GenServer.cast(pid, {:remove_participant, participant})
   end
 
-  def modify_title(state, new_title) do
-    GenServer.cast(state, {:title, new_title})
+  def update_title(pid, new_title) do
+    GenServer.cast(pid, {:title, new_title})
   end
 
-  def modify_description(state, new_description) do
-    GenServer.cast(state, {:description, new_description})
+  def update_description(pid, new_description) do
+    GenServer.cast(pid, {:description, new_description})
   end
 
-  def modify_date(state, new_date) do
-    GenServer.cast(state, {:date, new_date})
+  def update_date(pid, new_date) do
+    GenServer.cast(pid, {:date, new_date})
   end
 
-  def modify_duration(state, new_duration) do
-    GenServer.cast(state, {:duration, new_duration})
+  def update_duration(pid, new_duration) do
+    GenServer.cast(pid, {:duration, new_duration})
   end
 
   #CALLBACKS
@@ -54,7 +55,7 @@ defmodule Events.Event do
       if Enum.member?(event.participants, participant) do
         {:noreply, event}
       else
-        newevent = %{ event | participants: event.participants ++ [participant]}
+        newevent = %{ event | participants: [participant | event.participants]}
         {:noreply, newevent}
       end
   end
