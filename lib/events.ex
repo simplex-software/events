@@ -1,18 +1,10 @@
 defmodule Events do
-  @moduledoc """
-  Documentation for Events.
-  """
+  use Application
 
-  @doc """
-  Hello world.
+  def start_application do
 
-  ## Examples
+    #TODO
 
-      iex> Events.hello
-      :world
-
-  """
-  def hello do
-    :world
   end
+
 end
