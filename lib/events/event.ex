@@ -1,10 +1,11 @@
 defmodule Events.Event do
   use GenServer
 
-  defstruct title: nil, description: nil, date: nil, duration: nil, owner: nil, participants: []
+  defstruct id: nil  , title: nil, description: nil, date: nil, duration: nil, owner: nil, participants: []
 
-  def start_link(title, description, date, duration, owner) do
-    GenServer.start_link(__MODULE__, %Events.Event{title: title,
+  def start_link(id, title, description, date, duration, owner) do
+    GenServer.start_link(__MODULE__, %Events.Event{id: id,
+    title: title,
     description: description,
     date: date,
     duration: duration,
