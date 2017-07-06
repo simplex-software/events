@@ -55,7 +55,7 @@ defmodule Events.Event do
       if Enum.member?(event.participants, participant) do
         {:noreply, event}
       else
-        newevent = %{ event | participants: event.participants ++ [participant]}
+        newevent = %{ event | participants: [participant | event.participants]}
         {:noreply, newevent}
       end
   end
