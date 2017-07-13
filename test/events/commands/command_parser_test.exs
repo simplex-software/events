@@ -1,6 +1,12 @@
-defmodule CommandParserTest do
+defmodule Events.Commands.CommandParserTest do
   use ExUnit.Case
-  doctest CommandParser
+  doctest Events.Commands.CommandParser
+  alias Events.Commands.CommandParser
+  alias Events.Commands.CreateCommand
+  alias Events.Commands.DeleteCommand
+  alias Events.Commands.ModifyCommand
+  alias Events.Commands.SubscribeCommand
+  alias Events.Commands.UnsubscribeCommand
 
   test "parse arguments in create command returns CreateCommand" do
     create_command = CommandParser.parse_arguments(["create", "Dinner party",

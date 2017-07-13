@@ -1,4 +1,10 @@
-defmodule CommandParser do
+defmodule Events.Commands.CommandParser do
+  alias Events.Commands.CreateCommand
+  alias Events.Commands.DeleteCommand
+  alias Events.Commands.ModifyCommand
+  alias Events.Commands.SubscribeCommand
+  alias Events.Commands.UnsubscribeCommand
+
   @moduledoc """
   Documentation for CommandParser.
   """

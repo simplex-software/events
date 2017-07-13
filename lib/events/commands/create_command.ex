@@ -1,4 +1,4 @@
-defmodule CreateCommand do
+defmodule Events.Commands.CreateCommand do
 
   defstruct name: nil,
     description: nil,

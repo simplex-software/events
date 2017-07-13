@@ -1,4 +1,4 @@
-defmodule ModifyCommand do
+defmodule Events.Commands.ModifyCommand do
 
   defstruct event_id: nil,
     name: nil,
