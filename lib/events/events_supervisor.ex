@@ -15,7 +15,7 @@ defmodule Events.EventSupervisor do
   end
 
   def start_child(params) do
-    Superervisor.start_child(__MODULE__, params)
+    Supervisor.start_child(__MODULE__, params)
   end
 
 end
