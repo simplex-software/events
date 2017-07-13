@@ -14,7 +14,7 @@ defmodule Events.Notifications.NotificationServiceTest do
     assert_receive({:notification, "hola"})
   end
 
-  test "Delete from topic deletes from topic" do
+  test "Delete from topic deletes topic" do
     selfPid = self()
     :ok = NotificationService.add_to_topic(selfPid, :test)
     :ok = NotificationService.notify(:test, "hola")
@@ -30,4 +30,7 @@ defmodule Events.Notifications.NotificationServiceTest do
     assert_receive({:notification, "hola"})
   end
 
+  test "Notify without topics does not fail" do
+    :ok = NotificationService.notify(:test, "hola")
+  end
 end

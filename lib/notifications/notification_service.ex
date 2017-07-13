@@ -24,6 +24,7 @@ defmodule Events.Notifications.NotificationService do
     ##Callbacks
 
     def handle_cast({:add_to_topic, {pid,  topic}}, state) do
+      Process.monitor(pid)
       state = add_to_key(state, topic, pid)
       {:noreply, state}
     end
@@ -31,17 +32,21 @@ defmodule Events.Notifications.NotificationService do
     def handle_cast({:remove_from_topic, {pid,  topic}}, state) do
       list = Map.get(state, topic)
       list = List.delete(list, pid)
-      state = Map.put(state, topic, list)
+      state = update_key(state, topic, list)
       {:noreply, state}
     end
 
     def handle_cast({:notify, {topic, message}}, state) do
-      Enum.each(Map.get(state, topic), fn (x) -> send x, {:notification, message} end)
+      pids = Map.get(state, topic)
+      if pids != nil do
+        Enum.each(pids, fn (x) -> send x, {:notification, message} end)
+      end
       {:noreply, state}
     end
 
-    def handle_call({:list}, _from, state) do
-      {:reply, state, state}
+    def handle_info({:DOWN, _reference, :process, pid, _reason}, state) do
+      Enum.each(Map.keys(state), fn(x) -> delete_from_topic(pid, x) end)
+      {:noreply, state}
     end
 
     ##private functions
@@ -59,4 +64,13 @@ defmodule Events.Notifications.NotificationService do
     defp add_key_to_map(map, key) do
       Map.put_new(map, key, [])
     end
+
+    defp update_key(map, key, []) do
+      Map.drop(map, [key])
+    end
+
+    defp update_key(map, key, list) do
+      Map.put(map, key, list)
+    end
+
 end
