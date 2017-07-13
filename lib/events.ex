@@ -3,6 +3,6 @@ defmodule Events do
 
   def start(_type, _args) do
     Events.EventListSupervisor.start_link()
-   end
+  end
 
 end
