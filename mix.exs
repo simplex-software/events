@@ -8,7 +8,9 @@ defmodule Events.Mixfile do
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      deps: deps(),
-     escript: escript()]
+     escript: escript(),
+     aliases: aliases()
+    ]
   end
 
   # Configuration for the OTP application
@@ -16,13 +18,21 @@ defmodule Events.Mixfile do
   # Type "mix help compile.app" for more information
   def application do
     # Specify extra applications you'll use from Erlang/Elixir
-    [extra_applications: [:logger]]
+    [extra_applications: [:logger],
+    mod: {Events, []}]
   end
 
   def escript do
-    [main_module: Events.CLI]
+    [main_module: Events.CLI,
+    app: nil]
   end
-  
+
+  # Aliases. Check https://hexdocs.pm/mix/Mix.html#module-aliases for more information
+  defp aliases do
+    [
+      test: "test --no-start" #needed to avoid buldog to start when running tests
+    ]
+  end
 
   # Dependencies can be Hex packages:
   #

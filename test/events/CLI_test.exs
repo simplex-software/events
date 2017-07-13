@@ -3,6 +3,7 @@ defmodule Events.CLITest do
   import ExUnit.CaptureIO
 
   test "run in server mode" do
+    send(self(), :stop)
     assert capture_io(fn ->
       Events.CLI.main(["server"])
     end) == "Running in server mode\n"

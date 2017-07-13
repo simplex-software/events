@@ -1,6 +1,8 @@
 defmodule Events.CLI do
   def main(["server"]) do
     IO.puts("Running in server mode")
+    {:ok, _} = Application.ensure_all_started(:events)
+    receive do _ -> :ok end
   end
 
   def main(["client"]) do
