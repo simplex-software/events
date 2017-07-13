@@ -1,10 +1,8 @@
 defmodule Events do
   use Application
 
-  def start_application do
-
-    #TODO
-
-  end
+  def start(_type, _args) do
+    Events.EventListSupervisor.start_link()
+   end
 
 end
