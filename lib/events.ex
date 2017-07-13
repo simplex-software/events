@@ -1,18 +1,8 @@
 defmodule Events do
-  @moduledoc """
-  Documentation for Events.
-  """
+  use Application
 
-  @doc """
-  Hello world.
+  def start(_type, _args) do
+    Events.EventListSupervisor.start_link()
+   end
 
-  ## Examples
-
-      iex> Events.hello
-      :world
-
-  """
-  def hello do
-    :world
-  end
 end
