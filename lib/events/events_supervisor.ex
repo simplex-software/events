@@ -18,4 +18,8 @@ defmodule Events.EventSupervisor do
     Supervisor.start_child(__MODULE__, params)
   end
 
+  def terminate_child(pid) do
+    Supervisor.terminate_child(__MODULE__, pid)
+  end
+
 end

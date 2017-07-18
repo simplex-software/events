@@ -1,14 +1,16 @@
-defmodule ClientSupervisor do
-  use Supervisor
+defmodule Events.NotificationServiceSupervisor do
 
-  def start_link() do
+  import Supervisor.Spec
+  use Supervisor
+  alias Events.Notifications
+
+  def start_link do
     Supervisor.start_link(__MODULE__, :ok, name: __MODULE__)
   end
 
-  #ADD client here
   def init(:ok) do
-    children = [worker((), [])]
-    opts= [strategy: :one_for_one]
+    children = [worker(NotificationService, [])]
+    opts = [strategy: :one_for_one]
     supervise(children, opts)
   end
 
