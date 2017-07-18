@@ -24,7 +24,8 @@ defmodule Events.Mixfile do
 
   def escript do
     [main_module: Events.CLI,
-    app: nil]
+    app: nil,
+    emu_args: "-setcookie events"]
   end
 
   # Aliases. Check https://hexdocs.pm/mix/Mix.html#module-aliases for more information
