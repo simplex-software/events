@@ -1,5 +1,6 @@
 defmodule Events.EventList do
   use GenServer
+
   def start_link(id, title, description, date, duration, owner) do
     GenServer.start_link(__MODULE__, %{id: 0, events: []})
   end
@@ -27,8 +28,9 @@ defmodule Events.EventList do
   end
 
   def handle_cast({:remove_event, event}, events_list) do
-    if Enum.member?(events_list[:events], event) do
-      new_events_list = %{ events_list | events: List.delete(events_list[:events], event }
+    if Enum.member?(events_list[:events], event) and
+      Events.EventSupervisor.terminate_child(event) :: :ok  do
+      new_events_list = %{ events_list | events: List.delete(events_list[:events], pid }
       {:noreply, new_events_list}
     else
       {:noreply, events_list}
@@ -36,8 +38,9 @@ defmodule Events.EventList do
   end
 
   def handle_cast({:add_event, event}, events_list) do
-
-    new_events_list = %{ events_list | events: [event | events_list[:events],
+    {:ok, pid} = Events.EventSupervisor.start_child(event)
+    new_events_list = %{ events_list | events: [pid | events_list[:events],
     id: (events_list[:id] + 1)}
   end
+
 end
