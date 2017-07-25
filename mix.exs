@@ -23,7 +23,7 @@ defmodule Events.Mixfile do
   end
 
   def escript do
-    [main_module: Events.CLI,
+    [main_module: Events.CLI2,
     app: nil,
     emu_args: "-setcookie events"]
   end
