@@ -1,16 +1,14 @@
-defmodule Events.EventSupervisor do
-
-  import Supervisor.Spec
+defmodule ClientSupervisor do
   use Supervisor
-  alias Events.Event
 
-  def start_link do
+  def start_link() do
     Supervisor.start_link(__MODULE__, :ok, name: __MODULE__)
   end
 
+  #ADD client here
   def init(:ok) do
-    children = [worker(Event, [])]
-    opts = [strategy: :simple_one_for_one]
+    children = [worker((), [])]
+    opts= [strategy: :one_for_one]
     supervise(children, opts)
   end
 
