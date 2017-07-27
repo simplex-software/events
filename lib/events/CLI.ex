@@ -1,20 +1,20 @@
-defmodule Events.CLI do
+defmodule Events.CLI2 do
   @node Application.get_env(:events, :node)
 
   def main(["server", server_address]) do
-    start("server", server_address)
-    IO.puts("Running in server mode")
-    {:ok, _} = Application.ensure_all_started(:events)
-    :net_kernel.monitor_nodes(true)
-
-    monitor()
+      start("server", server_address)
+      {:ok, _} = Application.ensure_all_started(:events)
+      :net_kernel.monitor_nodes(true)
+      monitor()
   end
 
-  def main(["client", server_address, client_address]) do
-    start("client", client_address)
-    atom_address = String.to_atom("server@#{server_address}")
-    @node.connect(atom_address)
-    connected?(@node.ping(atom_address), atom_address)
+  def main(["client", client_address]) do
+     start("client", client_address)
+     client = Socket.UDP.open!(broadcast: true)
+     :ok = Socket.Datagram.send!(client, "configurable-password", {"255.255.255.255", 9090})
+     {server_address, _} = Socket.Datagram.recv!(client, [timeout: 5000])
+     atom_address = String.to_atom(server_address)
+     @node.connect(atom_address)
   end
 
   def main(_args) do
@@ -24,15 +24,6 @@ defmodule Events.CLI do
   defp start(name, address) do
     System.cmd("epmd", ["-daemon"])
     @node.start :"#{name}@#{address}"
-  end
-
-  defp connected?(:pong, server_address) do
-    IO.puts("Welcome!, connected to #{server_address}")
-    receive do _ -> :ok end
-  end
-
-  defp connected?(:pang, server_address) do
-    IO.puts("Oops! something went wrong while trying to connect to #{server_address}")
   end
 
   defp monitor() do

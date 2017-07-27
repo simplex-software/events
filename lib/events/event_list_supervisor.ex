@@ -5,6 +5,7 @@ defmodule Events.EventListSupervisor do
     use Supervisor
     alias Events.EventSupervisor
     alias Events.Notifications.NotificationService
+    alias Events.Connection.AutoDiscovery
 
 
     def start_link do
@@ -13,10 +14,10 @@ defmodule Events.EventListSupervisor do
 
     def init(:ok) do
       children = [supervisor(EventSupervisor, []),
-      worker(NotificationService, [])]
+      worker(NotificationService, []), worker(AutoDiscovery, [])]
       opts = [strategy: :one_for_one]
       supervise(children, opts)
 
     end
-  
+
 end
