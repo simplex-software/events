@@ -16,7 +16,6 @@ defmodule Events.Connection.AutoDiscovery do
 
   ## Callbacks
   def handle_cast({:listen}, socket) do
-
       listen(socket)
       {:noreply, socket}
   end
@@ -27,10 +26,8 @@ defmodule Events.Connection.AutoDiscovery do
     listen()
   end
 
-  ##Pre-restart
-
+  ## Pre-restart
   def terminate(_reason, socket) do
     Socket.close(socket)
   end
-
 end

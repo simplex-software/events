@@ -1,4 +1,4 @@
-defmodule Events.CLI2 do
+defmodule Events.CLI do
   @node Application.get_env(:events, :node)
 
   def main(["server", server_address]) do
