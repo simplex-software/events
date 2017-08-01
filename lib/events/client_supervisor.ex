@@ -1,5 +1,6 @@
 defmodule ClientSupervisor do
   use Supervisor
+  alias Events.Commands.UserInput
 
   def start_link() do
     Supervisor.start_link(__MODULE__, :ok, name: __MODULE__)
@@ -7,7 +8,7 @@ defmodule ClientSupervisor do
 
   #ADD client here
   def init(:ok) do
-    children = [worker((), [])]
+    children = [worker(UserInput, [])]
     opts= [strategy: :one_for_one]
     supervise(children, opts)
   end
