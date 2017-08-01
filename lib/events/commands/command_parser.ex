@@ -1,7 +1,7 @@
 defmodule Events.Commands.CommandParser do
   alias Events.Commands.CreateCommand
   alias Events.Commands.DeleteCommand
-  alias Events.Commands.ModifyCommand
+  alias Events.Commands.UpdateCommand
   alias Events.Commands.SubscribeCommand
   alias Events.Commands.UnsubscribeCommand
 
@@ -16,46 +16,46 @@ defmodule Events.Commands.CommandParser do
   """
 
   def parse_arguments(args) do
-    parsed_arguments = OptionParser.parse(args)
-    case parsed_arguments do
+    parsed_arguments = "operation=" <> args
+                        |> String.split(~r/\s+--/)
+                        |> Enum.map(fn x-> String.split(x, "=") end)
+                        |> Enum.map(fn x-> List.to_tuple(x) end)
+                        |> Map.new
 
-      {[description: description,
-        date: date,
-        duration: duration,
-        owner: owner,
-        participants: participants],
-        ["create", name],
-        _} -> %CreateCommand{name: name,
-                              description: description,
-                              date: date,
-                              duration: duration,
-                              owner: owner,
-                              participants: participants}
+    case parsed_arguments["operation"] do
 
-      {_, ["delete", event_id], _} -> %DeleteCommand{event_id: event_id}
+      "create" -> %CreateCommand{name: parsed_arguments["name"],
+                              description: parsed_arguments["description"],
+                              date: parsed_arguments["date"],
+                              duration: parsed_arguments["duration"],
+                              owner: parsed_arguments["owner"],
+                              participants: parsed_arguments["participants"]}
 
-      {[name: name,
-        description: description,
-        date: date,
-        duration: duration,
-        owner: owner,
-        participants: participants],
-        ["modify", event_id],
-        _} -> %ModifyCommand{event_id: event_id,
-                              name: name,
-                              description: description,
-                              date: date,
-                              duration: duration,
-                              owner: owner,
-                              participants: participants}
+      "delete" -> %DeleteCommand{event_id: parsed_arguments["event"]}
 
-      {[email: email],
-        ["subscribe", event_id],
-        _} -> %SubscribeCommand{event_id: event_id, email: email}
+      "update" -> %UpdateCommand{event_id: parsed_arguments["event"],
+                              name: parsed_arguments["name"],
+                              description: parsed_arguments["description"],
+                              date: parsed_arguments["date"],
+                              duration: parsed_arguments["duration"],
+                              owner: parsed_arguments["owner"],
+                              participants: parsed_arguments["participants"]}
 
-      {[email: email],
-        ["unsubscribe", event_id],
-        _} -> %UnsubscribeCommand{event_id: event_id, email: email}
+      "subscribe" -> %SubscribeCommand{event_id: parsed_arguments["event"],
+                                      email: parsed_arguments["email"]}
+
+      "unsubscribe" -> %UnsubscribeCommand{event_id: parsed_arguments["event"],
+                                          email: parsed_arguments["email"]}
+
+      _ -> IO.puts("Usage: \n
+      create --name=<name> --description=<description> --date=<date> \n
+      --duration=<minutes> --owner=<email> --participants=<email1,email2>\n
+      delete --event=<event_id>\n
+      update --event=<event_id> [--name=<name>] [--description=<description>]\n
+       [--date=<date>] [--duration=<minutes>] [--owner=<email>]\n
+        [--participants=<email1,email2]>\n
+      subscribe --event=<event_id> --email=<email>\n
+      unsubscribe --event=<event_id> --email=<email>")
 
     end
   end
