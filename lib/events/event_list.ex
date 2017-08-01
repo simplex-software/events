@@ -28,9 +28,8 @@ defmodule Events.EventList do
   end
 
   def handle_cast({:remove_event, event_id}, events_list) do
-    event = Enum.filter(events_list[:events], fn(target_event) -> elem(target_event, 0) == event_id end)
-    |> Enum.at(0)
-    if Enum.member?(events_list[:events], event) do
+    event = Enum.find(events_list[:events], fn(target_event) -> elem(target_event, 0) == event_id end)
+    if event != nil do
       {_, event_pid} = event
       Events.EventSupervisor.terminate_child(event_pid)
       new_events_list = %{ events_list | events: List.delete(events_list[:events], event)}
