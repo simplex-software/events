@@ -13,7 +13,7 @@ defmodule Events.EventListSupervisor do
     def init(:ok) do
       children = [supervisor(EventSupervisor, []),
       worker(NotificationService, []),
-      worker(EventsList, [])]
+      worker(EventList, [])]
       opts = [strategy: :one_for_one]
       supervise(children, opts)
     end
