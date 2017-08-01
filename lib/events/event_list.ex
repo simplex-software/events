@@ -17,8 +17,8 @@ defmodule Events.EventList do
      GenServer.call(pid, :list_events)
   end
 
-  def remove_event(pid, event) do
-     GenServer.cast(pid, {:remove_event, event})
+  def remove_event(pid, event_id) do
+     GenServer.cast(pid, {:remove_event, event_id})
   end
 
   # Callbacks
@@ -27,9 +27,12 @@ defmodule Events.EventList do
      {:reply, events_list[:events], events_list}
   end
 
-  def handle_cast({:remove_event, event}, events_list) do
+  def handle_cast({:remove_event, event_id}, events_list) do
+    event = Enum.filter(events_list[:events], fn(target_event) -> elem(target_event, 0) == event_id end)
+    |> Enum.at(0)
     if Enum.member?(events_list[:events], event) do
-      Events.EventSupervisor.terminate_child(event)
+      {_, event_pid} = event
+      Events.EventSupervisor.terminate_child(event_pid)
       new_events_list = %{ events_list | events: List.delete(events_list[:events], event)}
       {:noreply, new_events_list}
     else
@@ -40,7 +43,7 @@ defmodule Events.EventList do
   def handle_cast({:add_event, event}, events_list) do
     new_event = [(events_list[:id] + 1) | event]
     {:ok, pid} = Events.EventSupervisor.start_child(new_event)
-    new_events_list = %{ events_list | events: [pid | events_list[:events]],
+    new_events_list = %{ events_list | events: [{(events_list[:id] + 1), pid} | events_list[:events]],
     id: (events_list[:id] + 1)}
     {:noreply, new_events_list}
   end
