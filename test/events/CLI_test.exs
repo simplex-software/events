@@ -26,9 +26,10 @@ defmodule Events.CLITest do
   end
 
   test "run in client mode with valid server address" do
+    send(self(), {"server@127.0.0.1", {{127, 0, 0, 1}, "port"}})
     send(self(), :stop)
     assert capture_io(fn ->
-      Events.CLI.main(["client", "validServerAddress", "fakeClientAddress"])
+      Events.CLI.main(["client"])
     end) == "Welcome!, connected to server@validServerAddress\n"
   end
 
